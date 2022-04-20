@@ -9,8 +9,8 @@ JSON is very close to minimal for what it can do.
 JAMSON is an actually-minimal variant of JSON (but then extended with comments)
 
 
-- Restrict identifiers to lowercase alphanumeric and underscore
-- Restrict strings to 7-bit ascii printable char range
+- Restrict identifiers to non-whitespace 7-bit ascii printable chars
+- Restrict strings to 7-bit ascii printable chars
 - No quotes for identifiers
 - No commas
 - No colons
