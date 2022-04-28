@@ -19,15 +19,16 @@ str  ::= ... | '"' ... '"'
 WS   ::= ...
 ```
 
-- You don't need commas ~`,`~
-- You don't need colons ~`:`~
-- You don't need quotes ~`"`~ unless your string has a reserved character  \n{}[] (space)"
+- You don't need commas `,`
+- You don't need colons `:`
+- You don't need quotes `"` unless your string has a reserved character `\n\\ "{}[]`
+  (that's a newline, backslash, space, quote, and 2 pairs of brackets)
 - JAMS are objects, arrays, or strings. There are no other value types besides strings.
-  + The vast majority of the time, JSON data needs to be additionally checked
-    and manipulated into the right form in your language. Being able to safely use a value type like a number
-    or bool directly is a rare exception. In terms of readability and writeability of
-    JAMS files, it basically makes no difference because of lack of quote requirements,
-    just type what you mean directly like `1`, `1.0`, `true`, or whatever.
+  + Most of the time, JSON data needs to be checked, sanitized, and transformed into the
+    a native representation in your language. Being able to safely use a value type like a number
+    or bool directly from a JSON file is not that common. In terms of readability and writeability of
+    JAMS files, it basically makes no difference to have no other value types because of lack of quote requirements.
+    Just type what you mean directly like `1`, `1.0`, `true`, `null`, or whatever.
 - String hex escape is for unicode not utf16 more like wtf16 am I right haha
 
 Q: What does JAMS stand for?
