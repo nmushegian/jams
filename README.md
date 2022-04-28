@@ -13,8 +13,8 @@ Here is approximately the grammar, with optional whitespace and string rules tri
 ```
 jam  ::=  obj | arr | str
 obj  ::=  '{' (duo (WS duo)*)? '}'
-duo  ::=  str WS jam
 arr  ::=  '[' (jam (WS jam)*)? ']'
+duo  ::=  str WS jam
 str  ::= ... | '"' ... '"'
 WS   ::= ...
 ```
@@ -46,14 +46,14 @@ A: Actually-Minimalist JSON Alternative
 
 // wethpack.jams
 {
-    format dpack-1
+    format  dpack-1
     network ethereum
     objects {
         weth {
             objectname weth
-            address 0x00
-            typename Weth
-            artifact ""
+            address    0x00
+            typename   Weth
+            artifact   ""
         }
     }
     types {
