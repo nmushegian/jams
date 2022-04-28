@@ -1,35 +1,49 @@
-actually minimal JSON alternative
+actually minimalist JSON alternative
 ---
 
-Most "minimal" JSON alternatives have a spec at least 3x longer than JSON's
+Most "minimalist" JSON alternatives have a spec that is actually longer than JSON's
 and are harder to learn from a clean slate.
 
 JSON is very close to minimal for what it can do.
 
-JAMSON is an actually-minimal variant of JSON (but then extended with comments)
+JAMS is an almost-minimal variant of JSON.
 
+Here is approximately the grammar, with optional whitespace and string rules trimmed:
 
-- Restrict identifiers to non-whitespace 7-bit ascii printable chars
-- Restrict strings to 7-bit ascii printable chars
-- No quotes for identifiers
-- No commas
-- No colons
-- No role models
-- Restrict values to strings
-- Do not require quotes for strings without whitespace
-- Multi line strings by default
-- Prohibit duplicate keys at parse time by specification
+```
+jam  ::=  obj | arr | str
+obj  ::=  '{' (duo (WS duo)*)? '}'
+duo  ::=  str WS jam
+arr  ::=  '[' (jam (WS jam)*)? ']'
+str  ::= ... | '"' ... '"'
+WS   ::= ...
+```
+
+- You don't need commas ~`,`~
+- You don't need colons ~`:`~
+- You don't need quotes ~`"`~ unless your string has a reserved character  \n{}[] (space)"
+- JAMS are objects, arrays, or strings. There are no other value types besides strings.
+  + The vast majority of the time, JSON data needs to be additionally checked
+    and manipulated into the right form in your language. Being able to safely use a value type like a number
+    or bool directly is a rare exception. In terms of readability and writeability of
+    JAMS files, it basically makes no difference because of lack of quote requirements,
+    just type what you mean directly like `1`, `1.0`, `true`, or whatever.
+- String hex escape is for unicode not utf16 more like wtf16 am I right haha
+
+Q: What does JAMS stand for?
+
+A: Actually-Minimalist JSON Alternative
 
 
 ```
-// testcase.jam
+// testcase.jams
 {
     func test
     args [arg1 "arg 2"]
     want ["" 100]
 }
 
-// wethpack.jam
+// wethpack.jams
 {
     format dpack-1
     network ethereum
