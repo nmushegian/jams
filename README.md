@@ -14,8 +14,7 @@ JSON is very close to minimal for what it can do.
 
 JAMS is an almost-minimal variant of JSON.
 
-Here are two examples:
-
+Here is an example:
 
 ```
 // package.jam
@@ -29,31 +28,6 @@ Here are two examples:
   }
   devDependencies {
     tapzero ^0.6.1
-  }
-}
-
-
-// weth-pack.jam
-{
-  format   dpack-1
-  network  ethereum
-  types {
-    WETH9 {
-      typename WETH9
-      artifact {
-        / bafybeickwimswhizrefngf27ewnhi257zpapdujt3322uatk5co7o7teha
-      }
-    }
-  }
-  objects {
-    weth {
-      objectname  weth
-      address     0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
-      typename    WETH9
-      artifact {
-        / bafybeickwimswhizrefngf27ewnhi257zpapdujt3322uatk5co7o7teha
-      }
-    }
   }
 }
 ```
@@ -84,17 +58,4 @@ WS   ::= ...
 Q: What does JAMS stand for?
 
 A: Actually-Minimalist JSON Alternative
-
-
-```
-// testcase.jams
-{
-    func test
-    args [arg1 "arg 2"]
-    want ["" 100]
-}
-
-// wethpack.jams
-
-```
 
