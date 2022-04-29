@@ -24,13 +24,21 @@ HEXDIG               ::= [a-fA-F0-9]
 */
 
 const _jams =ast=> {
-    if ('jam' == ast.type) {
-        return _jams(ast.children[0])
-    }
-    if ('obj' == ast.type) {
-        if (ast.children.length == 0) {
-            return {}
-        } else {
+    switch (ast.type) {
+        case 'jam': {
+            return _jams(ast.children[0])
+        }
+        case 'str': {
+            return ast.text
+        }
+        case 'arr': {
+            const arr = []
+            for (let jam of ast.children) {
+                arr.push(_jams(jam))
+            }
+            return arr
+        }
+        case 'obj': {
             const out = {}
             for (let duo of ast.children) {
                 const key = _jams(duo.children[0])
@@ -39,12 +47,6 @@ const _jams =ast=> {
             }
             return out
         }
-    }
-    if ('str' == ast.type) {
-        return ast.text
-    }
-    if ('val' == ast.type) {
-        return _jams(ast.children[0])
     }
     throw new Error(`unimplemented ${ast.type}`)
 }
@@ -74,6 +76,16 @@ it('jams', t=>{
     t.ok(o)
     t.equal(o['outer']['inner'], 'val')
     t.equal(o['smushed']['inner'], 'val2')
+
+    o = jams('[zero one]')
+    t.ok(o)
+    t.equal(o[0], 'zero')
+    t.equal(o[1], 'one')
+
+    o = jams('[{key val} one]')
+    t.ok(o)
+    t.equal(o[0]['key'], 'val')
+    t.equal(o[1], 'one')
 })
 
 it('read', t=>{
