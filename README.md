@@ -2,8 +2,7 @@ actually minimalist JSON alternative
 ---
 
 ```
-const { jams } = require('jamson')
-
+import { jams } from 'jamfile'
 const obj = jams('...')
 ```
 
@@ -17,10 +16,9 @@ JAMS is an almost-minimal variant of JSON.
 Here is an example:
 
 ```
-// package.jam
 {
-  name    jamson
-  version 0.0.4
+  name    jamfile
+  version 0.0.5
   license MIT
   type    module
   dependencies {
