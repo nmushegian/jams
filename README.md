@@ -1,12 +1,62 @@
 actually minimalist JSON alternative
 ---
 
+```
+const { jams } = require('jamson')
+
+const obj = jams('...')
+```
+
 Most "minimalist" JSON alternatives have a spec that is actually longer than JSON's
 and are harder to learn from a clean slate.
 
 JSON is very close to minimal for what it can do.
 
 JAMS is an almost-minimal variant of JSON.
+
+Here are two examples:
+
+
+```
+// package.jam
+{
+  name    jamson
+  version 0.0.4
+  license MIT
+  type    module
+  dependencies {
+    easygram ^0.0.4
+  }
+  devDependencies {
+    tapzero ^0.6.1
+  }
+}
+
+
+// weth-pack.jam
+{
+  format   dpack-1
+  network  ethereum
+  types {
+    WETH9 {
+      typename WETH9
+      artifact {
+        / bafybeickwimswhizrefngf27ewnhi257zpapdujt3322uatk5co7o7teha
+      }
+    }
+  }
+  objects {
+    weth {
+      objectname  weth
+      address     0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      typename    WETH9
+      artifact {
+        / bafybeickwimswhizrefngf27ewnhi257zpapdujt3322uatk5co7o7teha
+      }
+    }
+  }
+}
+```
 
 Here is approximately the grammar, with optional whitespace and string rules trimmed:
 
@@ -45,23 +95,6 @@ A: Actually-Minimalist JSON Alternative
 }
 
 // wethpack.jams
-{
-    format  dpack-1
-    network ethereum
-    objects {
-        weth {
-            objectname weth
-            address    0x00
-            typename   Weth
-            artifact   ""
-        }
-    }
-    types {
-        Weth {
-            typename Weth
-            artifact ""
-        }
-    }
-}
+
 ```
 
