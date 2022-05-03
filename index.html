@@ -1,0 +1,57 @@
+<p style='max-width: 72ch'>
+JAMS is a minimalist alternative to JSON.
+
+Most "minimalist" JSON alternatives have a spec that is actually longer than JSON's, and they are harder to learn.
+
+JSON is very close to minimal for what it can do.
+
+JAMS is an almost-minimal variant of JSON.
+
+<hr>
+
+Here is an example:
+
+<pre>
+{
+  name    jamfile
+  version 0.0.5
+  license MIT
+  type    module
+  dependencies {
+    easygram ^0.0.4
+  }
+  devDependencies {
+    tapzero ^0.6.1
+  }
+}
+</pre>
+
+</p>
+
+<hr>
+Here is the usage of the <a href=https://npmjs.org/package/jamfile>jamfile</a> package:
+
+<pre>
+import { jams } from 'jamfile'
+
+const obj = jams('{ what [a JAMS string] }')
+
+assert( obj.what[1] == 'JAMS' )
+</pre>
+
+<hr>
+
+Here is the <s>complete</s> work-in-progress grammar:
+
+<pre>
+jam     ::= obj | arr | str
+obj     ::= WS* "{" WS* (duo (WS* duo)*)? WS* "}" WS*
+arr     ::= WS* "[" WS* (jam (WS* jam)*)? WS* "]" WS*
+duo     ::= str WS* jam
+str     ::= SYM | '"' ANY* '"'
+
+WS      ::= [ \t\n\r]+
+SYM     ::= SAFE+
+ANY     ::= (SAFE | WS | "{" | "}" | "[" | "]")
+SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+</pre>
