@@ -15,14 +15,15 @@ HEXDIG               ::= [a-fA-F0-9]
 
 export const read = gram(`
 jam     ::= obj | arr | str
-obj     ::= WS* "{" WS* (duo (WS* duo)*)? WS* "}" WS*
-arr     ::= WS* "[" WS* (jam (WS* jam)*)? WS* "]" WS*
+obj     ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
+arr     ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo     ::= str WS* jam
 str     ::= SYM | '"' ANY* '"'
 
 WS      ::= [ \t\n\r]+
 SYM     ::= SAFE+
-ANY     ::= (SAFE | WS | "{" | "}" | "[" | "]")
+SYN     ::= '{' | '}' | '[' | ']'
+ANY     ::= (SAFE | WS | SYN)
 SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
