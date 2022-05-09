@@ -1,5 +1,5 @@
 {
-    "name": "jamfile",
+    "name": "jams.js",
     "version": "0.0.5",
     "license": "MIT",
     "type": "module",

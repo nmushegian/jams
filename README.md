@@ -2,7 +2,7 @@ actually minimalist JSON alternative
 ---
 
 ```
-import { jams } from 'jamfile'
+import { jams } from 'jams.js'
 const obj = jams('...')
 ```
 
@@ -17,7 +17,7 @@ Here is an example:
 
 ```
 {
-  name    jamfile
+  name    jams.js
   version 0.0.5
   license MIT
   type    module

@@ -35,6 +35,32 @@ test('jams', t=>{
     t.equal(o[1], 'one')
 })
 
+test('strings', t=>{
+    let o = jams('"') // idk what this should be actually
+    // t.ok ?
+
+    o = jams('""')
+    t.equal("", o)
+
+    o = jams(`{key "val"}`)
+    t.equal(o.key, "val")
+
+    o = jams(`{\"key \"val}`)
+    t.equal(o[`"key`], `"val`)
+
+    o = jams(`{\\key val}`)
+    t.equal(o[`\key`], `val`)
+
+    o = jams(`{\key val}`)
+    t.ok(!o) // err
+
+    o = jams(`{key" val}`)
+    t.ok(!o) // err
+
+    o = jams(`{"key " val\"\}\}}`)
+    t.equal(o.[`"key "`], `" val"}}`)
+})
+
 test('read', t=>{
     let ast = read(`{}`)
     t.ok(ast)
