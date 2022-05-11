@@ -58,7 +58,7 @@ test('strings', t=>{
     t.ok(!o) // err
 
     o = jams(`{"key " val\"\}\}}`)
-    t.equal(o.[`"key "`], `" val"}}`)
+    t.equal(o[`"key "`], `" val"}}`)
 })
 
 test('read', t=>{
