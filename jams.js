@@ -35,7 +35,7 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
-            return ast.text
+            return ast.text.replace(/\"/g, "") // remove escaped strings
         }
         case 'arr': {
             const arr = []
