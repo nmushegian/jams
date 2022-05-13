@@ -33,6 +33,13 @@ test('jams', t=>{
     t.ok(o)
     t.equal(o[0]['key'], 'val')
     t.equal(o[1], 'one')
+
+    try{
+        o = jams('{key{inner val}key{inner val}}')
+    }
+    catch{
+        t.ok(o)
+    }
 })
 
 test('strings', t=>{
