@@ -22,9 +22,9 @@ str     ::= BARE+ | '"' ANY* '"'
 
 WS      ::= [ \t\n\r]+
 SYN     ::= '{' | '}' | '[' | ']'
-ANY     ::= (BARE | CLOTHED | WS)
+ANY     ::= (BARE | CLOTHED | WS | SYN)
 BARE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
-CLOTHED  ::= (( [#x20-#x21] | [#x23-#x5B] | [#x5A-#x7A]) | (#x5C ( #x22 | #x5C | #x2F | #x62 | #x66 | #x6E | #x72 | #x74 | #x75 [a-fA-F0-9] [a-fA-F0-9] )))
+CLOTHED  ::= (( [#x20-#x21] | [#x23-#x5B] | [#x5A-#x7A]) | #x5C ( '"' | #x5C | #x2F | #x62 | #x66 | #x6E | #x72 | #x74 | #x75 [a-fA-F0-9] [a-fA-F0-9] ) )
 
 `)
 
