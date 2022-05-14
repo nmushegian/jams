@@ -18,14 +18,14 @@ jam     ::= obj | arr | str
 obj     ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr     ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo     ::= str WS* jam
-str     ::= SYM | '"' ANY* '"'
+str     ::= BARE+ | '"' ANY* '"'
 
 WS      ::= [ \t\n\r]+
-SYM     ::= SAFE+
 SYN     ::= '{' | '}' | '[' | ']'
-ANY     ::= (SAFE | WS | UNSAFE)
-SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
-UNSAFE  ::= SYN | #x5C
+ANY     ::= (BARE | CLOTHED | WS)
+BARE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+CLOTHED  ::= (( [#x20-#x21] | [#x23-#x5B] | [#x5A-#x7A]) | (#x5C ( #x22 | #x5C | #x2F | #x62 | #x66 | #x6E | #x72 | #x74 | #x75 [a-fA-F0-9] [a-fA-F0-9] )))
+
 `)
 
 export const jams =s=> _jams(read(s))

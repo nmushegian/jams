@@ -2,7 +2,7 @@ import { test } from 'tapzero'
 
 import { jams, read } from './jams.js'
 
-const INVALID_JAMS = RegExp("Invalid JAMS")
+const INVALID_JAMS = /Invalid JAMS/
 
 test('jams', t=>{
     let o = jams('{}')
@@ -58,16 +58,16 @@ test('strings', t=>{
 
     // Should pass, regular escape char
     o = jams('{\key val}')
-    t.equal(o[`\key`], `val`)
+    t.equal(o[`key`], `val`)
 
     // Should fail, escaping an unsafe char without quotes
      t.throws( _ => {
          jams(`{\\key val}`)
      }, INVALID_JAMS)
 
-    // If you're a masochist you can do stuff like this
-    o = jams(`{"\\key" val}`)
-    t.equal(o[`\\key`, 'val'])
+     t.throws( _ => {
+        jams(`{\key val}`)
+     }, INVALID_JAMS)
 
     o = jams(`{key "val]"}`)
     t.equal(o.key, "val]")
@@ -82,8 +82,8 @@ test('strings', t=>{
         jams(`{key" val}`)
     })
 
-    o = jams(`{"key " " val\!}"}`)
-    t.equal(o["key "], ` val!}`)
+    o = jams(`{"key " " val!\""}`)
+    t.equal(o["key "], ` val!"`)
 
     // TODO: !DMFXYZ! failing to read this, return later
     // o = jams(`{"key " val\"\}\}}`)
