@@ -23,13 +23,17 @@ str     ::= SYM | '"' ANY* '"'
 WS      ::= [ \t\n\r]+
 SYM     ::= SAFE+
 SYN     ::= '{' | '}' | '[' | ']'
-ANY     ::= (SAFE | WS | SYN)
+ANY     ::= (SAFE | WS | UNSAFE)
 SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+UNSAFE  ::= SYN | #x5C
 `)
 
 export const jams =s=> _jams(read(s))
 
 const _jams =ast=> {
+    if (ast == null) {
+        throw new Error("Invalid JAMS")
+    }
     switch (ast.type) {
         case 'jam': {
             return _jams(ast.children[0])

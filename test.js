@@ -2,6 +2,8 @@ import { test } from 'tapzero'
 
 import { jams, read } from './jams.js'
 
+const INVALID_JAMS = RegExp("Invalid JAMS")
+
 test('jams', t=>{
     let o = jams('{}')
     t.ok(o)
@@ -54,14 +56,26 @@ test('strings', t=>{
     o = jams(`{\"key \"val}`)
     t.equal(o["key "], `val`)
 
-    // TODO: !DMFXYZ! failing to read this, return later
-    // o = jams('{\\key val}')
-    // t.equal(o[`\key`], `val`)
+    // Should pass, regular escape char
+    o = jams('{\key val}')
+    t.equal(o[`\key`], `val`)
 
-    // is this intended to throw?
+    // Should fail, escaping an unsafe char without quotes
+     t.throws( _ => {
+         jams(`{\\key val}`)
+     }, INVALID_JAMS)
+
+    // If you're a masochist you can do stuff like this
+    o = jams(`{"\\key" val}`)
+    t.equal(o[`\\key`, 'val'])
+
+    o = jams(`{key "val]"}`)
+    t.equal(o.key, "val]")
+
+    // but not stuff like this
     t.throws(_ => {
-        jams(`{\\key1 val}`) // is this intended to throw?
-    })
+        jams(`{key val]}`)
+    }, INVALID_JAMS)
 
     // should throw, bad quote matching
     t.throws(_ => {
@@ -80,7 +94,6 @@ test('strings', t=>{
     t.equal(o.key, "multiple word value")
 
     // should parse two separate duos 
-    // @NIKOLAI is this the intended behavior? Thoughts in enforcing a newline/carriage return?
     o = jams(`{key multiple word value}`)
     t.equal(o.key, "multiple")
     t.equal(o.word, "value")
