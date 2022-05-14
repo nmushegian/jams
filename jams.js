@@ -49,6 +49,9 @@ const _jams =ast=> {
             for (let duo of ast.children) {
                 const key = _jams(duo.children[0])
                 const val = _jams(duo.children[1])
+                if (out[key]) {
+                    throw new Error(`panic: can't parse duplciate keys ${duo.children[0]}`)
+                }
                 out[key] = val
             }
             return out
