@@ -2,6 +2,17 @@ import { test } from 'tapzero'
 
 import { jams, read } from './jams.js'
 
+import {readFileSync} from 'fs'
+
+test('json comparison', t=> {
+    const json_o = JSON.parse(readFileSync("./exampledata/example.json"))
+    const jams_o = jams(readFileSync('./exampledata/example.jams'))
+    for (const key in json_o) {
+        t.ok(jams_o[key])
+        t.ok(obj_equals(json_o[key], jams_o[key]))
+    }
+})
+
 test('jams', t=>{
     let o = jams('{}')
     t.ok(o)
@@ -98,3 +109,28 @@ test('casetest sample', t=>{
     t.equal(obj.want[0], "")
     t.equal(obj.want[1], "3")
 })
+
+// helper function so that json comparison is cleaner
+function obj_equals(ref_obj, contender_obj) {
+    if (typeof(ref_obj) == 'string') {
+        return ref_obj == contender_obj
+    }
+    if (Array.isArray(ref_obj)) {
+        if (ref_obj.length != contender_obj.length) {
+            return false;
+        }
+        for(let i = 0; i < ref_obj.length; ++i) {
+            if (!obj_equals(ref_obj[i], contender_obj[i])) {
+                return false;
+            }
+        }
+        return true;
+    } 
+    for(const key in ref_obj) {
+        if (!obj_equals(ref_obj[key], contender_obj[key])) {
+            return false;
+        }
+    }
+    return true;
+}
+
