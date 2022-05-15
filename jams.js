@@ -14,17 +14,17 @@ HEXDIG               ::= [a-fA-F0-9]
 */
 
 export const read = gram(`
-jam     ::= obj | arr | str
-obj     ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
-arr     ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
-duo     ::= str WS* jam
-str     ::= SYM | '"' ANY* '"'
-
-WS      ::= [ \t\n\r]+
-SYM     ::= SAFE+
-SYN     ::= '{' | '}' | '[' | ']'
-ANY     ::= (SAFE | WS | SYN)
-SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+jam         ::= obj | arr | str | pure_str
+obj         ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
+arr         ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
+duo         ::= (pure_str | str) WS* jam
+pure_str    ::= SYM
+str         ::= '"' ANY* '"'
+WS          ::= [ \t\n\r]+
+SYM         ::= SAFE+
+SYN         ::= '{' | '}' | '[' | ']'
+ANY         ::= (SAFE | WS | SYN)
+SAFE        ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
 export const jams =s=> _jams(read(s))
@@ -34,8 +34,11 @@ const _jams =ast=> {
         case 'jam': {
             return _jams(ast.children[0])
         }
-        case 'str': {
+        case 'pure_str': {
             return ast.text
+        }
+        case 'str': {
+            return ast.text.slice(1, -1)
         }
         case 'arr': {
             const arr = []

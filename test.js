@@ -51,6 +51,9 @@ test('strings', t=>{
     o = jams('""')
     t.equal("", o)
 
+    o = jams(`{key "multi word value"}`)
+    t.equal(o.key, 'multi word value')
+
     o = jams(`{key "val"}`)
     t.equal(o.key, "val")
 
