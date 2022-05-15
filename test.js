@@ -48,8 +48,14 @@ test('jams', t=>{
 
 test('strings', t=>{
     let o
-    o = jams('""')
-    t.equal("", o)
+    o = jams(`{"key" "val"}`)
+    t.equal(o.key, "val")
+
+    o = jams(`{"key" "multi word value"}`)
+    t.equal(o.key, "multi word value")
+
+    o = jams(`""`)
+    t.equal("", o) //err, quotes are being escaped for some reaosn
 
     o = jams(`{key "val"}`)
     t.equal(o.key, "val")
