@@ -36,9 +36,7 @@ test('jams', t=>{
 })
 
 test('strings', t=>{
-    let o = jams('"') // idk what this should be actually
-    // t.ok ?
-
+    let o
     o = jams('""')
     t.equal("", o)
 
@@ -58,7 +56,7 @@ test('strings', t=>{
     t.ok(!o) // err
 
     o = jams(`{"key " val\"\}\}}`)
-    t.equal(o.[`"key "`], `" val"}}`)
+    t.equal(o[`"key "`], `" val"}}`)
 })
 
 test('read', t=>{
@@ -81,4 +79,25 @@ val}}`)
 
     ast = read(`{key "val{"}`)
     t.ok(ast)
+})
+
+
+test('casetest sample', t=>{
+    let obj = jams(`
+{
+  note "example casetest jams"
+  func adder
+  args [1 2]
+  want ["" 3]
+}
+    `)
+    t.ok(obj)
+    t.equal(obj.note, "example casetest jams")
+    t.equal(obj.func, "adder")
+    t.equal(obj.args.length, 2)
+    t.equal(obj.args[0], "1")
+    t.equal(obj.args[1], "2")
+    t.equal(obj.want.length, 2)
+    t.equal(obj.want[0], "")
+    t.equal(obj.want[1], "3")
 })
