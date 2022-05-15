@@ -6,7 +6,7 @@ import {readFileSync} from 'fs'
 
 test('json comparison', t=> {
     const json_o = JSON.parse(readFileSync("./exampledata/example.json"))
-    const jams_o = jams(String(readFileSync('./exampledata/example.jams')))
+    const jams_o = jams(readFileSync('./exampledata/example.jams'))
     for (const key in json_o) {
         t.ok(jams_o[key])
         t.ok(obj_equals(json_o[key], jams_o[key]))

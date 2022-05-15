@@ -26,8 +26,9 @@ SYN     ::= '{' | '}' | '[' | ']'
 ANY     ::= (SAFE | WS | SYN)
 SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
-
-export const jams =s=> _jams(read(s))
+// Cast as string as it might be a buffer as from
+// readFilySync
+export const jams =s=> _jams(read(String(s)))
 
 const _jams =ast=> {
     switch (ast.type) {
