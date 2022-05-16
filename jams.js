@@ -37,6 +37,7 @@ const _jams =ast=> {
         }
         case 'str': {
             if (ast.children.length == 1) {
+                // TODO sanity check it's a string
                 return _jams(ast.children[0])
             }
             return ast.text
@@ -55,7 +56,11 @@ const _jams =ast=> {
             const out = {}
             for (let duo of ast.children) {
                 const key = _jams(duo.children[0])
+                // TODO assert key is str
                 const val = _jams(duo.children[1])
+                if (out[key] !== undefined) {
+                    throw new Error(`parse error: duplicate keys are prohibited at parse time`)
+                }
                 out[key] = val
             }
             return out

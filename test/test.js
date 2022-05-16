@@ -1,16 +1,21 @@
 import { test } from 'tapzero'
 
-import { jams, read } from './jams.js'
+import { jams, read } from '../jams.js'
 
-import {readFileSync} from 'fs'
+import { readFileSync, readdirSync } from 'fs'
 
-test('json comparison', t=> {
-    const json_o = JSON.parse(readFileSync("./exampledata/example.json"))
-    const jams_o = jams(readFileSync('./exampledata/example.jams'))
-    for (const key in json_o) {
-        t.ok(jams_o[key])
-        t.ok(obj_equals(json_o[key], jams_o[key]))
-    }
+test('passing files and their JSON equivalents', t=> {
+    readdirSync('./test/pass', filename=>{
+        const jams_o = jams(readFileSync('./pass/${filename}'))
+        const jsonfile = readFileSync('./pass/${filename}.json')
+        if (jsonfile) {
+            const json_o = JSON.parse(jsonfile)
+            for (const key in json_o) {
+                t.ok(jams_o[key])
+                t.ok(obj_equals(json_o[key], jams_o[key]))
+            }
+        }
+    })
 })
 
 test('jams', t=>{
