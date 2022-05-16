@@ -18,8 +18,8 @@ jam     ::= obj | arr | str
 obj     ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr     ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo     ::= str WS* jam
-str     ::= SYM | '"' ANY* '"'
-
+str     ::= SYM | '"' q_str '"'
+q_str   ::= ANY*
 WS      ::= [ \t\n\r]+
 SYM     ::= SAFE+
 SYN     ::= '{' | '}' | '[' | ']'
@@ -36,6 +36,12 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
+            if (ast.children.length == 1) {
+                return _jams(ast.children[0])
+            }
+            return ast.text
+        }
+        case 'q_str': {
             return ast.text
         }
         case 'arr': {

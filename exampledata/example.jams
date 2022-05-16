@@ -5,4 +5,5 @@
         key1 val1 
         key2 val2
     }
+    str_key "everything; little programs"
 }
