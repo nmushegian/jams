@@ -37,7 +37,7 @@ const _jams =ast=> {
         }
         case 'str': {
             if (ast.children.length == 1) {
-                if(!valid_jams_str(ast.children[0])) {
+                if(!(ast.children[0].type == 'str' ||ast.children[0].type == 'q_str' )) {
                     throw new Error(`Bad string: ${ast.text}`)
                 }
                 return _jams(ast.children[0])
@@ -58,7 +58,7 @@ const _jams =ast=> {
             const out = {}
             for (let duo of ast.children) {
                 let key = duo.children[0]
-                if(!valid_jams_str(key)){
+                if(!(key.type == 'str' || key.type == 'q_str')){
                     throw new Error(`parse error: keys can only be strings. ${key} is not a string`)
                 }
                 key = _jams(key)
@@ -72,8 +72,4 @@ const _jams =ast=> {
         }
     }
     throw new Error(`panic: unrecognized AST node ${ast.type}`)
-}
-
-const valid_jams_str = (jam) => {
-    return jam.type == 'str' || jam.type == 'q_str'
 }
