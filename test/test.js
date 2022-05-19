@@ -68,6 +68,10 @@ test('strings', t=>{
     o = jams(`{"key" "multi word value"}`)
     t.equal(o.key, "multi word value")
 
+    t.throws(_ => {
+        jams`{{bad key} val}`
+    })
+
     o = jams(`""`)
     t.equal("", o) //err, quotes are being escaped for some reaosn
 

@@ -37,7 +37,9 @@ const _jams =ast=> {
         }
         case 'str': {
             if (ast.children.length == 1) {
-                // TODO sanity check it's a string
+                if(!(ast.children[0].type == 'str' ||ast.children[0].type == 'q_str' )) {
+                    throw new Error(`Bad string: ${ast.text}`)
+                }
                 return _jams(ast.children[0])
             }
             return ast.text
@@ -55,8 +57,11 @@ const _jams =ast=> {
         case 'obj': {
             const out = {}
             for (let duo of ast.children) {
-                const key = _jams(duo.children[0])
-                // TODO assert key is str
+                let key = duo.children[0]
+                if(!(key.type == 'str' || key.type == 'q_str')){
+                    throw new Error(`parse error: keys can only be strings. ${key} is not a string`)
+                }
+                key = _jams(key)
                 const val = _jams(duo.children[1])
                 if (out[key] !== undefined) {
                     throw new Error(`parse error: duplicate keys are prohibited at parse time`)
