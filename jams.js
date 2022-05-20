@@ -37,10 +37,11 @@ const _jams =ast=> {
         }
         case 'str': {
             if (ast.children.length == 1) {
-                if(!(ast.children[0].type == 'str' ||ast.children[0].type == 'q_str' )) {
+                let child = ast.children[0]
+                if (child.type != 'q_str') {
                     throw new Error(`Bad string: ${ast.text}`)
                 }
-                return _jams(ast.children[0])
+                return _jams(child)
             }
             return ast.text
         }
