@@ -14,17 +14,17 @@ HEXDIG               ::= [a-fA-F0-9]
 */
 
 export const read = gram(`
-jam     ::= obj | arr | str
-obj     ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
-arr     ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
-duo     ::= str WS* jam
-str     ::= SYM | '"' q_str '"'
-q_str   ::= ANY*
-WS      ::= [ \t\n\r]+
-SYM     ::= SAFE+
-SYN     ::= '{' | '}' | '[' | ']'
-ANY     ::= (SAFE | WS | SYN)
-SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+jam          ::= obj | arr | str
+obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
+arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
+duo          ::= str WS* jam
+str          ::= bare_str  | '"' quoted_str '"'
+bare_str     ::= SAFE+
+quoted_str   ::= ANY*
+WS           ::= [ \t\n\r]+
+SYN          ::= '{' | '}' | '[' | ']'
+ANY          ::= (SAFE | WS | SYN)
+SAFE         ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 // Cast as string as it might be a buffer as from
 // readFilySync
@@ -36,17 +36,10 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
-            if (ast.children.length == 1) {
-                let child = ast.children[0]
-                if (child.type != 'q_str') {
-                    throw new Error(`Bad string: ${ast.text}`)
-                }
-                return _jams(child)
+            if (ast.children.length != 1) {
+                throw new Error(`Invalid string`)
             }
-            return ast.text
-        }
-        case 'q_str': {
-            return ast.text
+            return ast.children[0].text
         }
         case 'arr': {
             const arr = []
@@ -58,11 +51,7 @@ const _jams =ast=> {
         case 'obj': {
             const out = {}
             for (let duo of ast.children) {
-                let key = duo.children[0]
-                if(!(key.type == 'str' || key.type == 'q_str')){
-                    throw new Error(`parse error: keys can only be strings. ${key} is not a string`)
-                }
-                key = _jams(key)
+                const key = _jams(duo.children[0])
                 const val = _jams(duo.children[1])
                 if (out[key] !== undefined) {
                     throw new Error(`parse error: duplicate keys are prohibited at parse time`)
