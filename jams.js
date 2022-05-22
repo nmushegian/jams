@@ -23,8 +23,11 @@ bare         ::= SAFE+
 quote        ::= ANY*
 WS           ::= [ \t\n\r]+
 SYN          ::= '{' | '}' | '[' | ']'
-ANY          ::= (SAFE | WS | SYN)
+ANY          ::= (SAFE | WS | SYN | UNSAFE)
 SAFE         ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+UNSAFE       ::= ESCAPE unsafe
+ESCAPE       ::= #x5C
+unsafe       ::= #x22 | #x5C
 `)
 
 export const jams =s=> {
