@@ -53,13 +53,13 @@ const _jams =ast=> {
             return ast.children[0].text
         }
         case 'quote': {
-            let children = ast.children
+            const children = ast.children
             let text = ast.text
             for (let child of children) {
                 if (child.type == "unsafe") {
                     // EBNF module re-escapes strings, so "\" becomes "\\"
                     // iff child is of unsafe type do we re-do the unescape
-                    let unescaped = child.text.replace(/\\/, "")
+                    const unescaped = child.text.replace(/\\/, "")
                     // Not SSA, but otherwise we would have to rebuild child by child
                     text = text.replace(child.text, unescaped)
                 }

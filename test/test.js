@@ -72,8 +72,8 @@ test('strings', t=>{
         jams`{{bad key} val}`
     })
 
-    o = jams(`{key "val"}`)
-    t.equal(o.key, "val")
+    o = jams(String.raw`{"\"key" "\"val"}`) // Need raw so js doesn't escape \
+    t.equal(o[`"key`], `"val`)
 
     o = jams(`{\"key \"val}`)
     t.equal(o[`"key`], `"val`)
