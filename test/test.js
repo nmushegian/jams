@@ -80,7 +80,7 @@ test('strings', t=>{
     o = jams(`{\"key \" val}`)
     t.equal(o[`key `], `val`)
 
-    t.throws(jams(`{\\"key \\" val}`))
+    t.throws(_ => jams(`{"key\\" val}`))
 
     o = jams(`{\key val}`)
     t.equal(o[`\key`], `val`)
