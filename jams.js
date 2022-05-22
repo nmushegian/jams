@@ -18,9 +18,9 @@ jam          ::= obj | arr | str
 obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo          ::= str WS+ jam
-str          ::= bare_str  | '"' quoted_str '"'
-bare_str     ::= SAFE+
-quoted_str   ::= ANY*
+str          ::= bare  | '"' quote '"'
+bare         ::= SAFE+
+quote        ::= ANY*
 WS           ::= [ \t\n\r]+
 SYN          ::= '{' | '}' | '[' | ']'
 ANY          ::= (SAFE | WS | SYN)
@@ -29,7 +29,7 @@ SAFE         ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 
 export const jams =s=> {
     // Cast as string so we can accept a few other types
-    str = String(str)
+    const str = String(s)
     const ast = read(str)
     if (ast === null) throw new Error('Syntax error')
     return _jams(ast)
