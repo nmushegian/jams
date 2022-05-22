@@ -33,12 +33,12 @@ test('jams', t=>{
     t.equal(1, Object.keys(o).length)
     t.equal(o['key'], 'val')
 
-    o = jams('{outer{inner val}}')
+    o = jams('{outer {inner val}}')
     t.ok(o)
     t.equal(1, Object.keys(o).length)
     t.equal(o['outer']['inner'], 'val')
 
-    o = jams('{outer{inner val}smushed{inner val2}}')
+    o = jams('{outer {inner val} smushed {inner val2}}')
     t.ok(o)
     t.equal(o['outer']['inner'], 'val')
     t.equal(o['smushed']['inner'], 'val2')
@@ -54,9 +54,9 @@ test('jams', t=>{
     t.equal(o[1], 'one')
 
     t.throws(_ => {
-        jams('{key{inner val}key{inner val}}')
+        jams('{key val1 key val2}')
     })
-    o = jams('{key{inner val}key2{inner val}}')
+    o = jams('{key1 {inner val} key2 {inner val}}')
     t.ok(o)
 })
 
@@ -72,23 +72,20 @@ test('strings', t=>{
         jams`{{bad key} val}`
     })
 
-    o = jams(`""`)
-    t.equal("", o) //err, quotes are being escaped for some reaosn
+    t.throws(_ => jams(""))
 
     o = jams(`{key "val"}`)
     t.equal(o.key, "val")
 
-    o = jams(`{\"key \"val}`)
-    t.equal(o[`"key`], `"val`)
+    o = jams(`{\"key \" val}`)
+    t.equal(o[`key `], `val`)
 
-    o = jams(`{\\key val}`)
+    o = jams(`{\key val}`)
     t.equal(o[`\key`], `val`)
 
-    o = jams(`{key" val}`)
-    t.ok(!o) // err
+    t.throws(_ => jams(`{key" val}`))
 
-    o = jams(`{"key " val\"\}\}}`)
-    t.equal(o[`"key "`], `val"}`)
+    t.throws(_ => jams(`{"key " val\"\}\}}`))
 })
 
 test('read', t=>{
@@ -120,7 +117,7 @@ test('casetest sample', t=>{
   note "example casetest jams"
   func adder
   args [1 2]
-  want ["" 3]
+  want [3 4]
 }
     `)
     t.ok(obj)
@@ -130,8 +127,8 @@ test('casetest sample', t=>{
     t.equal(obj.args[0], "1")
     t.equal(obj.args[1], "2")
     t.equal(obj.want.length, 2)
-    t.equal(obj.want[0], "")
-    t.equal(obj.want[1], "3")
+    t.equal(obj.want[0], "3")
+    t.equal(obj.want[1], "4")
 })
 
 // helper function so that json comparison is cleaner

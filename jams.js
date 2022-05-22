@@ -17,7 +17,7 @@ export const read = gram(`
 jam          ::= obj | arr | str
 obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
-duo          ::= str WS* jam
+duo          ::= str WS+ jam
 str          ::= bare_str  | '"' quoted_str '"'
 bare_str     ::= SAFE+
 quoted_str   ::= ANY*
@@ -28,7 +28,11 @@ SAFE         ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 // Cast as string as it might be a buffer as from
 // readFilySync
-export const jams =s=> _jams(read(String(s)))
+export const jams =s=> {
+    const ast = read(String(s))
+    if (ast === null) throw new Error('Syntax error')
+    return _jams(ast)
+}
 
 const _jams =ast=> {
     switch (ast.type) {
@@ -61,5 +65,4 @@ const _jams =ast=> {
             return out
         }
     }
-    throw new Error(`panic: unrecognized AST node ${ast.type}`)
 }

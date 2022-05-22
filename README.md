@@ -57,3 +57,6 @@ Q: What does JAMS stand for?
 
 A: Actually-Minimalist JSON Alternative
 
+Q: Where can I find information / documentation for the parser generator which this package depends on?
+
+A: https://github.com/lys-lang/node-ebnf/blob/master/src/Parser.ts
