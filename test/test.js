@@ -33,12 +33,12 @@ test('jams', t=>{
     t.equal(1, Object.keys(o).length)
     t.equal(o['key'], 'val')
 
-    o = jams('{outer{inner val}}')
+    o = jams('{outer {inner val}}')
     t.ok(o)
     t.equal(1, Object.keys(o).length)
     t.equal(o['outer']['inner'], 'val')
 
-    o = jams('{outer{inner val}smushed{inner val2}}')
+    o = jams('{outer {inner val} smushed {inner val2}}')
     t.ok(o)
     t.equal(o['outer']['inner'], 'val')
     t.equal(o['smushed']['inner'], 'val2')
@@ -54,9 +54,9 @@ test('jams', t=>{
     t.equal(o[1], 'one')
 
     t.throws(_ => {
-        jams('{key{inner val}key{inner val}}')
+        jams('{key {inner val} key {inner val}}')
     })
-    o = jams('{key{inner val}key2{inner val}}')
+    o = jams('{key {inner val} key2 {inner val}}')
     t.ok(o)
 })
 
