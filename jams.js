@@ -17,7 +17,7 @@ export const read = gram(`
 jam          ::= obj | arr | str
 obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
-duo          ::= str WS* jam
+duo          ::= str WS+ jam
 str          ::= bare_str  | '"' quoted_str '"'
 bare_str     ::= SAFE+
 quoted_str   ::= ANY*
@@ -29,9 +29,14 @@ UNSAFE       ::= ESCAPE unsafe
 ESCAPE       ::= #x5C
 unsafe       ::= #x22 | #x5C
 `)
-// Cast as string as it might be a buffer as from
-// readFilySync
-export const jams =s=> _jams(read(String(s)))
+
+export const jams =s=> {
+    // Cast as string so we can accept a few other types
+    str = String(str)
+    const ast = read(str)
+    if (ast === null) throw new Error('Syntax error')
+    return _jams(ast)
+}
 
 const _jams =ast=> {
     switch (ast.type) {
