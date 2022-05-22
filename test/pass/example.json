@@ -5,5 +5,8 @@
         "key1": "val1",
         "key2": "val2"
     },
-    "str_key": "everything; little programs"
+    "str_key": "everything; little programs",
+    "escape_key": "this string has a \" in it",
+    "multi_escape_key": "this string \" has a \"multiple escapes"
+
 }

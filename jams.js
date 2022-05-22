@@ -20,14 +20,13 @@ arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo          ::= str WS+ jam
 str          ::= bare  | '"' quote '"'
 bare         ::= SAFE+
-quote        ::= ANY*
+quote        ::= (unsafe | ANY)*
+unsafe       ::= ESCAPE #x22
 WS           ::= [ \t\n\r]+
 SYN          ::= '{' | '}' | '[' | ']'
-ANY          ::= (SAFE | WS | SYN | UNSAFE)
+ANY          ::= (SAFE | WS | SYN)
 SAFE         ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
-UNSAFE       ::= ESCAPE unsafe
 ESCAPE       ::= #x5C
-unsafe       ::= #x22 | #x5C
 `)
 
 export const jams =s=> {
@@ -47,7 +46,25 @@ const _jams =ast=> {
             if (ast.children.length != 1) {
                 throw new Error(`Invalid string`)
             }
+            let child = ast.children[0]
+            if (child.type == 'quote') {
+                return _jams(child)
+            }
             return ast.children[0].text
+        }
+        case 'quote': {
+            let children = ast.children
+            let text = ast.text
+            for (let child of children) {
+                if (child.type == "unsafe") {
+                    // EBNF module re-escapes strings, so "\" becomes "\\"
+                    // iff child is of unsafe type do we re-do the unescape
+                    let unescaped = child.text.replace(/\\/, "")
+                    // Not SSA, but otherwise we would have to rebuild child by child
+                    text = text.replace(child.text, unescaped)
+                }
+            }
+            return text
         }
         case 'arr': {
             const arr = []

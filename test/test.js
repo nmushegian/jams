@@ -72,13 +72,6 @@ test('strings', t=>{
         jams`{{bad key} val}`
     })
 
-    o = jams(String.raw`{"\"key" "\"val"}`)
-    console.log(o)
-    t.equal(o[`"key`], `"val`)
-
-    o = jams(`""`)
-    t.equal("", o) //err, quotes are being escaped for some reaosn
-
     o = jams(`{key "val"}`)
     t.equal(o.key, "val")
 
@@ -93,6 +86,9 @@ test('strings', t=>{
 
     o = jams(`{"key " val\"\}\}}`)
     t.equal(o[`"key "`], `val"}`)
+
+    o = jams(`""`)
+    t.equal("", o) //err, quotes are being escaped for some reaosn
 })
 
 test('read', t=>{
