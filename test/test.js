@@ -26,9 +26,10 @@ test('passing files and their JSON equivalents', _=> {
 })
 
 test('failing files', t=> {
-    readdirSync('./test/fail').forEach(filename => {
+    const subpath = './test/fail'
+    readdirSync(subpath).forEach(filename => {
         const extension = filename.split('.').slice(-1)[0]
-	const filepath = `./test/fail/${filename}`
+	const filepath = `${subpath}/${filename}`
         if (extension === "jams") {
 	    t.throws(
 	        _ => jams(readFileSync(filepath)),
