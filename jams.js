@@ -14,21 +14,26 @@ HEXDIG               ::= [a-fA-F0-9]
 */
 
 export const read = gram(`
-jam     ::= obj | arr | str
-obj     ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
-arr     ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
-duo     ::= str WS* jam
-str     ::= SYM | '"' q_str '"'
-q_str   ::= ANY*
-WS      ::= [ \t\n\r]+
-SYM     ::= SAFE+
-SYN     ::= '{' | '}' | '[' | ']'
-ANY     ::= (SAFE | WS | SYN)
-SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+jam          ::= obj | arr | str
+obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
+arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
+duo          ::= str WS+ jam
+str          ::= bare  | '"' quote '"'
+bare         ::= SAFE+
+quote        ::= ANY*
+WS           ::= [ \t\n\r]+
+SYN          ::= '{' | '}' | '[' | ']'
+ANY          ::= (SAFE | WS | SYN)
+SAFE         ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
-// Cast as string as it might be a buffer as from
-// readFilySync
-export const jams =s=> _jams(read(String(s)))
+
+export const jams =s=> {
+    // Cast as string so we can accept a few other types
+    const str = String(s)
+    const ast = read(str)
+    if (ast === null) throw new Error('Syntax error')
+    return _jams(ast)
+}
 
 const _jams =ast=> {
     switch (ast.type) {
@@ -36,14 +41,10 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
-            if (ast.children.length == 1) {
-                // TODO sanity check it's a string
-                return _jams(ast.children[0])
+            if (ast.children.length != 1) {
+                throw new Error(`Invalid string`)
             }
-            return ast.text
-        }
-        case 'q_str': {
-            return ast.text
+            return ast.children[0].text
         }
         case 'arr': {
             const arr = []
@@ -56,7 +57,6 @@ const _jams =ast=> {
             const out = {}
             for (let duo of ast.children) {
                 const key = _jams(duo.children[0])
-                // TODO assert key is str
                 const val = _jams(duo.children[1])
                 if (out[key] !== undefined) {
                     throw new Error(`parse error: duplicate keys are prohibited at parse time`)

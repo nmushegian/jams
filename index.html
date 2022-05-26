@@ -24,7 +24,7 @@ Here is an example:
 <pre>
 {
   name    jamfile
-  version 0.0.5
+  version 1.0.0
   license MIT
   type    module
   dependencies {
@@ -37,10 +37,10 @@ Here is an example:
 </pre>
 
 <hr>
-Here is the usage of the <a href=https://npmjs.org/package/jamfile>jamfile</a> package:
+Here is the usage of the <a href=https://npmjs.org/package/jams.js>jams.js</a> package:
 
 <pre>
-import { jams } from 'jamfile'
+import { jams } from 'jams.js'
 
 const obj = jams('{ what [a JAMS string] }')
 
@@ -49,17 +49,37 @@ assert( obj.what[1] == 'JAMS' )
 
 <hr>
 
-Here is the <s>complete</s> work-in-progress grammar:
+Here is approximately the grammar, with whitespace and string rules removed:
 
 <pre>
 jam     ::= obj | arr | str
-obj     ::= WS* "{" WS* (duo (WS* duo)*)? WS* "}" WS*
-arr     ::= WS* "[" WS* (jam (WS* jam)*)? WS* "]" WS*
-duo     ::= str WS* jam
-str     ::= SYM | '"' ANY* '"'
+obj     ::= "{" (duo (duo)*)? "}"
+arr     ::= "[" (jam (jam)*)? "]"
+duo     ::= str jam
+str     ::= BARE | '"' QUOTE '"'
 
-WS      ::= [ \t\n\r]+
-SYM     ::= SAFE+
-ANY     ::= (SAFE | WS | "{" | "}" | "[" | "]")
-SAFE    ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+WS      ::= ...
+BARE    ::= ...
+QUOTE   ::= ...
 </pre>
+
+Here is a clearer table of how different character escapes work:
+
+<pre>
+symbols           range (hex)     barewords?    escape char?
+  (tab)             09              NO           \t (or literal)
+  (newline)         0A              NO           \n (or literal)
+  (space)           20              NO
+  !                 21              YES
+  "                 22              NO           \"
+  #$%&'()*+,-./     23-2F           YES
+  :;<=>?@           3A-40           YES
+  [\]               5B-5D           NO           \[ \\ \]
+  ^_`               5E-60           YES
+  {                 7B              NO           \{
+  |                 7C              YES
+  }                 7D              NO           \}
+  ~                 7E              YES
+</pre>
+
+
