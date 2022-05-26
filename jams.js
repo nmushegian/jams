@@ -47,7 +47,7 @@ const _jams =ast=> {
             if (ast.children.length != 1) {
                 throw new Error(`Invalid string`)
             }
-            return ast.children[0].text;
+            return ast.children[0].text
         }
         case 'arr': {
             const arr = []
