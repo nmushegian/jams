@@ -24,7 +24,7 @@ quote        ::= ANY*
 WS           ::= [ \t\n\r]+
 SYN          ::= '{' | '}' | '[' | ']'
 ANY          ::= (SAFE | WS | SYN)
-SAFE         ::= #x21 | [#x24-#x5A] | [#x5E-#x7A] | #x7C | #x7E
+SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
 export const jams =s=> {
