@@ -12,7 +12,7 @@ test('passing files and their JSON equivalents', _=> {
         if (extension === "jams") {
 	    test(filename, t=> {
 		const jamspath = `${subpath}/${filename}`
-	        const jams_o = jams(readFileSync(jamspath))
+	        const jams_o = jams(readFileSync(jamspath, {encoding: 'utf8'}))
 	        const jsonfile = readFileSync(jamspath.replace('jams', 'json'))
 	        const json_o = JSON.parse(jsonfile)
 	        t.deepEqual(Object.keys(jams_o), Object.keys(json_o))
@@ -32,7 +32,7 @@ test('failing files', t=> {
 	const filepath = `${subpath}/${filename}`
         if (extension === "jams") {
 	    t.throws(
-	        _ => jams(readFileSync(filepath)),
+	        _ => jams(readFileSync(filepath, {encoding: 'utf8'})),
 		new RegExp('Syntax error')
 	    )
 	}
