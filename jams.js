@@ -5,7 +5,7 @@ jam          ::= obj | arr | str
 obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo          ::= str WS+ jam
-str          ::= bare  | '"' quote* '"'
+str          ::= bare  | WS* '"' quote* '"' WS*
 bare         ::= SAFE+
 quote        ::= ANY*
 WS           ::= [ \t\n\r]+
@@ -29,11 +29,12 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
-            if (ast.text === '""') return ''
-            if (ast.children.length !== 1) throw new Error(`Invalid string`)
-            const json_str = String.raw`"${ast.children[0].text}"`
+            return (ast.text.includes('""') && ast.children.length === 0) ? "" : _jams(ast.children[0])
+        }
+        case 'bare':
+        case 'quote': {
             // This assumes the string is a well-formed JSON string e.g. newlines should be escaped as '\\n' (JS string representation).
-            const json = JSON.parse(json_str)
+            const json = JSON.parse(String.raw`"${ast.text}"`)
             return String.raw`${json}`
         }
         case 'arr': {
