@@ -29,8 +29,8 @@ SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 
 export const jams =s=> {
     // Cast as string so we can accept a few other types
-    //const str = String(s)
-    const ast = read(s)
+    const str = String(s)
+    const ast = read(str)
     if (ast === null) throw new Error('Syntax error')
     return _jams(ast)
 }
