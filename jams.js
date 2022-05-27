@@ -18,7 +18,7 @@ jam          ::= obj | arr | str
 obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo          ::= str WS+ jam
-str          ::= bare  | '"' quote '"'
+str          ::= bare  | '"' quote* '"'
 bare         ::= SAFE+
 quote        ::= ANY*
 WS           ::= [ \t\n\r]+
@@ -28,9 +28,7 @@ SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
 export const jams =s=> {
-    // Cast as string so we can accept a few other types
-    const str = String(s)
-    const ast = read(str)
+    const ast = read(s)
     if (ast === null) throw new Error('Syntax error')
     return _jams(ast)
 }
@@ -41,6 +39,9 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
+            if (ast.text === '""'){
+                return ''
+            }
             if (ast.children.length != 1) {
                 throw new Error(`Invalid string`)
             }
