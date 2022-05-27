@@ -25,17 +25,19 @@ test('passing files and their JSON equivalents', _ => {
 	})
 })
 
-test('failing files', t => {
+test('failing files', _ => {
 	const subpath = './test/fail'
 	readdirSync(subpath).forEach(filename => {
-		const extension = filename.split('.').slice(-1)[0]
-		const filepath = `${subpath}/${filename}`
-		if (extension === "jams") {
-			t.throws(
-				_ => jams(readFileSync(filepath, { encoding: 'utf8' })),
-				new RegExp('Syntax error')
-			)
-		}
+		test(filename, t => {
+			const extension = filename.split('.').slice(-1)[0]
+			const filepath = `${subpath}/${filename}`
+			if (extension === "jams") {
+				t.throws(
+					_ => jams(readFileSync(filepath, { encoding: 'utf8' })),
+					new RegExp('Syntax error')
+				)
+			}
+		})
 	})
 })
 
