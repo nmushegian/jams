@@ -33,8 +33,8 @@ const _jams =ast=> {
         }
         case 'bare':
         case 'quote': {
-            // This assumes the string is a well-formed JSON string e.g. newlines should be escaped as '\\n' (JS string representation).
-            const json = JSON.parse(String.raw`"${ast.text}"`)
+            const quoted = String.raw`"${ast.text}"`
+            const json = JSON.parse(quoted)
             return String.raw`${json}`
         }
         case 'arr': {
