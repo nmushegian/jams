@@ -10,7 +10,7 @@ test('passing files and their JSON equivalents', _=> {
         const extension = filename.split('.').slice(-1)[0]
 	// Only read JAMS files, and we require a corresponding JSON verison.
         if (extension === "jams") {
-	    test(filename, t=> {
+	    test(`${subpath}/${filename}`, t=> {
 		const jamspath = `${subpath}/${filename}`
 	        const jams_o = jams(readFileSync(jamspath, {encoding: 'utf8'}))
 	        const jsonfile = readFileSync(jamspath.replace('jams', 'json'))
@@ -28,7 +28,7 @@ test('passing files and their JSON equivalents', _=> {
 test('failing files', t=> {
     const subpath = './test/fail'
     readdirSync(subpath).forEach(filename => {
-		test(filename, t => {
+		test(`${subpath}/${filename}`, t => {
         const extension = filename.split('.').slice(-1)[0]
 	const filepath = `${subpath}/${filename}`
         if (extension === "jams") {
