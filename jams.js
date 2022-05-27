@@ -14,8 +14,7 @@ ANY          ::= (SAFE | WS | SYN | #x5C)
 SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
-// Expect a well-formed JSON string, already decoded, not UTF-8/UTF-16 encoded bytes etc.
-// Ref: https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+// Expects a JAMS string, the leaves/strings within must be valid JSON strings.
 export const jams =s=> {
     const ast = read(s)
     if (ast === null) throw new Error('Syntax error')
