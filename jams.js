@@ -16,7 +16,8 @@ SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 
 export const jams =s=> {
     const ast = read(s)
-    if (ast === null || ast.errors.length > 0) throw new Error('Syntax error')
+    if (ast === null) throw new Error('Syntax error')
+    if (ast.errors.length > 0) throw ast.errors[0]
     return _jams(ast)
 }
 
