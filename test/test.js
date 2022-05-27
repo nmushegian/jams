@@ -12,13 +12,13 @@ test('passing files and their JSON equivalents', _=> {
         if (extension === "jams") {
 	    test(filename, t=> {
 		const jamspath = `${subpath}/${filename}`
-            var read = readFileSync(jamspath, {encoding: 'utf8'})
+                var read = readFileSync(jamspath, {encoding: 'utf8'})
 	        const jams_o = jams(read)
 	        const jsonfile = readFileSync(jamspath.replace('jams', 'json'))
 	        const json_o = JSON.parse(jsonfile)
 	        t.deepEqual(Object.keys(jams_o), Object.keys(json_o))
 	        for (const key in json_o) {
-	    	    t.ok(jams_o[key])
+	    	    t.ok(jams_o[key] !== undefined)
 	    	    t.deepEqual(json_o[key], jams_o[key])
 	        }
 	    })

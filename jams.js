@@ -41,7 +41,7 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
-            if (ast.children.length == 0){
+            if (ast.text === '""'){
                 return ''
             }
             if (ast.children.length != 1) {
