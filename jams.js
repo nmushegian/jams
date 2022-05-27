@@ -1,18 +1,5 @@
 import { default as gram } from 'easygram'
 
-// TODO: Here is the exact string grammar from JSON.
-//       It needs to be modified to escape unicode rather than utf16.
-//       It should be split into 2 char classes, those that need to be quoted,
-//       like []"{} and whitespace, and those than do not require quotes.
-/*
-string               ::= '"' ( ( [#x20-#x21] | [#x23-#x5B] | [#x5D-#xFFFF]
-                               ) | #x5C ( #x22 | #x5C | #x2F | #x62 | #x66
-                                        | #x6E | #x72 | #x74 | #x75 HEXDIG HEXDIG HEXDIG HEXDIG
-                                        )
-                         )* '"'
-HEXDIG               ::= [a-fA-F0-9]
-*/
-
 export const read = gram(`
 jam          ::= obj | arr | str
 obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
@@ -23,13 +10,13 @@ bare         ::= SAFE+
 quote        ::= ANY*
 WS           ::= [ \t\n\r]+
 SYN          ::= '{' | '}' | '[' | ']'
-ANY          ::= (SAFE | WS | SYN)
+ANY          ::= (SAFE | WS | SYN | #x5C)
 SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
 export const jams =s=> {
     const ast = read(s)
-    if (ast === null) throw new Error('Syntax error')
+    if (ast === null || ast.errors.length > 0) throw new Error('Syntax error')
     return _jams(ast)
 }
 
@@ -39,29 +26,27 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
-            if (ast.text === '""'){
-                return ''
-            }
-            if (ast.children.length != 1) {
-                throw new Error(`Invalid string`)
-            }
-            return ast.children[0].text
+            if (ast.text === '""') return ''
+            if (ast.children.length !== 1) throw new Error(`Invalid string`)
+            const text = ast.children[0].text
+            console.log(1)
+            console.log(text)
+            const escaped = text.replace('"', '\\"')
+            console.log(escaped)
+            const quoted = String.raw`"${text}"`
+            console.log(quoted)
+            const interpreted = JSON.parse(quoted)
+            return String.raw`${interpreted}`
         }
         case 'arr': {
-            const arr = []
-            for (let jam of ast.children) {
-                arr.push(_jams(jam))
-            }
-            return arr
+            return ast.children.map(child => _jams(child))
         }
         case 'obj': {
             const out = {}
             for (let duo of ast.children) {
                 const key = _jams(duo.children[0])
                 const val = _jams(duo.children[1])
-                if (out[key] !== undefined) {
-                    throw new Error(`parse error: duplicate keys are prohibited at parse time`)
-                }
+                if (out[key] !== undefined) throw new Error(`Parse error: duplicate keys are prohibited at parse time`)
                 out[key] = val
             }
             return out
