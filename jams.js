@@ -28,15 +28,9 @@ const _jams =ast=> {
         case 'str': {
             if (ast.text === '""') return ''
             if (ast.children.length !== 1) throw new Error(`Invalid string`)
-            const text = ast.children[0].text
-            console.log(1)
-            console.log(text)
-            const escaped = text.replace('"', '\\"')
-            console.log(escaped)
-            const quoted = String.raw`"${text}"`
-            console.log(quoted)
-            const interpreted = JSON.parse(quoted)
-            return String.raw`${interpreted}`
+            const utf8_encoded = String.raw`"${ast.children[0].text}"`
+            const json = JSON.parse(utf8_encoded)
+            return String.raw`${json}`
         }
         case 'arr': {
             return ast.children.map(child => _jams(child))
