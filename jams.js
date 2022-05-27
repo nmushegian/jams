@@ -14,6 +14,8 @@ ANY          ::= (SAFE | WS | SYN | #x5C)
 SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
+// Expect a well-formed JSON string, already decoded, not UTF-8/UTF-16 encoded bytes etc.
+// Ref: https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
 export const jams =s=> {
     const ast = read(s)
     if (ast === null) throw new Error('Syntax error')
@@ -29,8 +31,9 @@ const _jams =ast=> {
         case 'str': {
             if (ast.text === '""') return ''
             if (ast.children.length !== 1) throw new Error(`Invalid string`)
-            const utf8_encoded = String.raw`"${ast.children[0].text}"`
-            const json = JSON.parse(utf8_encoded)
+            const json_str = String.raw`"${ast.children[0].text}"`
+            // This assumes the string is a well-formed JSON string e.g. newlines should be escaped as '\\n' (JS string representation).
+            const json = JSON.parse(json_str)
             return String.raw`${json}`
         }
         case 'arr': {
