@@ -5,7 +5,7 @@ jam          ::= obj | arr | str
 obj          ::= WS* '{' WS* (duo (WS* duo)*)? WS* '}' WS*
 arr          ::= WS* '[' WS* (jam (WS* jam)*)? WS* ']' WS*
 duo          ::= str WS+ jam
-str          ::= bare  | '"' quote* '"'
+str          ::= bare  | WS* '"' quote* '"' WS*
 bare         ::= SAFE+
 quote        ::= ANY*
 WS           ::= [ \t\n\r]+
@@ -14,6 +14,7 @@ ANY          ::= (SAFE | WS | SYN | #x5C)
 SAFE         ::= #x21 | [#x23-#x5A] | [#x5E-#x7A] | #x7C | #x7E
 `)
 
+// Expects a JAMS string, the leaves/strings within must be valid JSON strings.
 export const jams =s=> {
     const ast = read(s)
     if (ast === null) throw new Error('Syntax error')
@@ -27,10 +28,12 @@ const _jams =ast=> {
             return _jams(ast.children[0])
         }
         case 'str': {
-            if (ast.text === '""') return ''
-            if (ast.children.length !== 1) throw new Error(`Invalid string`)
-            const utf8_encoded = String.raw`"${ast.children[0].text}"`
-            const json = JSON.parse(utf8_encoded)
+            return (ast.text.includes('""') && ast.children.length === 0) ? "" : _jams(ast.children[0])
+        }
+        case 'bare':
+        case 'quote': {
+            const quoted = String.raw`"${ast.text}"`
+            const json = JSON.parse(quoted)
             return String.raw`${json}`
         }
         case 'arr': {

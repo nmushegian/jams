@@ -1,6 +1,6 @@
 import { test } from 'tapzero'
 
-import { jams, read } from '../jams.js'
+import { jams } from '../jams.js'
 
 import { readFileSync, readdirSync } from 'fs'
 
@@ -40,3 +40,32 @@ test('failing files', t=> {
 	})
     })
 })
+
+/*
+A humble note on how a newline (and escaped sequences in general) is kept in-file vs in-memory.
+
+---
+
+> r = encoding => require('fs').readFileSync('patch.jams', encoding)
+
+// Let's assume the file has "\n".
+// The code reads 2 bytes: a backslash and alphabet "n".
+// Thus, the reading kept the backslash character.
+> r(null)                                      
+<Buffer 5c 6e>                                 
+> let x = r('utf8'); [x, x.length]             // Same content, but the bytes get decoded according to utf8 to a string of length 2
+['\\n', 2]                                     
+
+// In contrast, parsing with JSON.parse removes backslash. Because JSON spec states "\\" followed by "n" should be interpreted as newline.
+> let j = JSON.parse(String.raw`"${x}"`); [j, j.length]
+['\n', 1]                                      
+
+---
+
+Therefore,
+- reading a file with UTF8 encoding "escapes"/treats backslash as standalone.
+- JSON.parse "un-escapes"/parses valid escape sequence (e.g. "\\" + "n") into 1 character.
+- More? 
+  - json.org
+  - https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+*/
