@@ -1,5 +1,5 @@
 import { test } from 'tapzero'
-
+import { JAM } from '../jamParser.js'
 import { jams } from '../jams.js'
 
 import { readFileSync, readdirSync } from 'fs'
@@ -12,7 +12,7 @@ test('passing files and their JSON equivalents', _=> {
         if (extension === "jams") {
 	    test(`${subpath}/${filename}`, t=> {
 		const jamspath = `${subpath}/${filename}`
-	        const jams_o = jams(readFileSync(jamspath, {encoding: 'utf8'}))
+	        const jams_o = JAM.parse(readFileSync(jamspath, {encoding: 'utf8'}))
 	        const jsonfile = readFileSync(jamspath.replace('jams', 'json'))
 	        const json_o = JSON.parse(jsonfile)
 	        t.deepEqual(Object.keys(jams_o), Object.keys(json_o))
