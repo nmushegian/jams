@@ -1,0 +1,3 @@
+[submodule "lib/dbrock-jams"]
+	path = lib/dbrock-jams
+	url = https://github.com/dbrock/jams
