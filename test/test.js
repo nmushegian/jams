@@ -1,6 +1,6 @@
 import { test } from 'tapzero'
 
-import { jams } from '../jams.js'
+import { jams } from '../index.js'
 
 import { readFileSync, readdirSync } from 'fs'
 

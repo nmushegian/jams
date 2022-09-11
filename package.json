@@ -1,9 +1,12 @@
 {
     "name": "jams.js",
-    "main": "jams.js",
-    "version": "0.0.8",
+    "main": "index.js",
+    "version": "0.0.10",
     "license": "MIT",
     "type": "module",
+    "scripts": {
+        "test": "node test/test.js"
+    },
     "dependencies": {
         "easygram": "^0.4.0"
     },
